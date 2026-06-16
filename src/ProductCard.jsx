@@ -1,12 +1,36 @@
 import React from "react";
+import { supabase } from "./Supabase.js";
 
 export function ProductCard({ name, price, image }) {
+
+  const addToCart = async () => {
+    const { error } = await supabase
+      .from("cart")
+      .insert([
+        {
+          product_name: name,
+          price: price,
+        },
+      ]);
+
+    if (error) {
+      alert("Error adding product");
+      console.log(error);
+    } else {
+      alert("Product added to cart");
+      window.location.reload();
+    }
+  };
+
   return (
     <div style={styles.card}>
-      <img src={image}alt={name} style={styles.image} />
+      <img src={image} alt={name} style={styles.image} />
       <h3>{name}</h3>
       <p>{price}</p>
-      <button>Add to Cart</button>
+
+      <button onClick={addToCart}>
+        Add to Cart
+      </button>
     </div>
   );
 }

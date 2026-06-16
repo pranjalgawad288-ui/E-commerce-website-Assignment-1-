@@ -1,6 +1,23 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { supabase } from "./supabase.js";
 
 export function Navbar() {
+  const [cartCount, setCartCount] = useState(0);
+
+  useEffect(() => {
+    getCartCount();
+  }, []);
+
+  async function getCartCount() {
+    const { count, error } = await supabase
+      .from("cart")
+      .select("*", { count: "exact", head: true });
+
+    if (!error) {
+      setCartCount(count);
+    }
+  }
+
   return (
     <nav style={styles.nav}>
       <h2>ShopEasy</h2>
@@ -10,6 +27,7 @@ export function Navbar() {
         <li>Products</li>
         <li>Categories</li>
         <li>Contact</li>
+        <li>🛒 Cart ({cartCount})</li>
       </ul>
     </nav>
   );
